@@ -1,3 +1,6 @@
+
+
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,16 +9,11 @@
   <title>Hostel Food Saver</title>
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
-
     body{
       font-family:Arial,sans-serif;
       background:#0f172a;
       color:white;
+      margin:0;
       padding:20px;
     }
 
@@ -24,58 +22,36 @@
       margin:auto;
     }
 
-    .header{
-      text-align:center;
-      margin-bottom:30px;
-    }
-
-    .header h1{
-      font-size:2.3rem;
-      margin-bottom:10px;
-    }
-
-    .header p{
-      color:#cbd5e1;
-    }
-
     .card{
       background:#1e293b;
-      border-radius:20px;
-      padding:25px;
-      box-shadow:0 10px 25px rgba(0,0,0,0.3);
+      padding:24px;
+      border-radius:18px;
       margin-bottom:20px;
     }
 
-    label{
-      display:block;
-      margin-bottom:8px;
-      font-weight:bold;
+    h1,h2,h3{
+      margin-top:0;
+    }
+
+    input,select,button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:10px;
+      font-size:16px;
     }
 
     input,select{
-      width:100%;
-      padding:12px;
-      border:none;
-      border-radius:10px;
-      margin-bottom:18px;
       background:#334155;
       color:white;
     }
 
     button{
-      width:100%;
-      padding:14px;
-      border:none;
-      border-radius:12px;
-      font-size:16px;
+      background:#2563eb;
+      color:white;
       font-weight:bold;
       cursor:pointer;
-      color:white;
-      margin-bottom:10px;
-    }
-
-    .submit-btn{
-      background:#2563eb;
     }
 
     .reset-btn{
@@ -90,42 +66,14 @@
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
       gap:15px;
-      margin-top:25px;
+      margin-top:20px;
     }
 
     .stat{
       background:#334155;
       padding:20px;
-      border-radius:15px;
+      border-radius:14px;
       text-align:center;
-    }
-
-    .stat h2{
-      font-size:2rem;
-      margin-bottom:5px;
-    }
-
-    .coordinator{
-      margin-top:25px;
-      border-top:1px solid #475569;
-      padding-top:20px;
-    }
-
-    .coord-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:#334155;
-      padding:10px 14px;
-      border-radius:10px;
-      margin-top:10px;
-    }
-
-    .remove-btn{
-      background:#dc2626;
-      width:auto;
-      padding:8px 14px;
-      margin:0;
     }
 
     table{
@@ -135,8 +83,8 @@
     }
 
     th,td{
-      padding:12px;
       border:1px solid #475569;
+      padding:10px;
       text-align:left;
     }
 
@@ -144,14 +92,20 @@
       background:#334155;
     }
 
-    tr:nth-child(even){
-      background:#263445;
+    .coord-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:#334155;
+      padding:10px;
+      border-radius:10px;
+      margin-top:10px;
     }
 
-    @media(max-width:700px){
-      table{
-        font-size:14px;
-      }
+    .remove-btn{
+      width:auto;
+      background:#dc2626;
+      padding:8px 14px;
     }
   </style>
 </head>
@@ -160,22 +114,16 @@
 
 <div class="container">
 
-  <div class="header">
-    <h1>🍽️ Hostel Food Saver</h1>
-    <p>Reduce hostel food waste by confirming your meal attendance</p>
-  </div>
-
   <div class="card">
+    <h1>🍽️ Hostel Food Saver</h1>
+    <p>Reduce hostel food waste by confirming your meal attendance.</p>
 
     <form id="foodForm">
 
-      <label>Student Name</label>
-      <input type="text" id="name" required>
+      <input type="text" id="name" placeholder="Student Name" required>
 
-      <label>Room Number</label>
-      <input type="text" id="room" required>
+      <input type="text" id="room" placeholder="Room Number" required>
 
-      <label>Meal Time</label>
       <select id="meal" required>
         <option value="">Select Meal</option>
         <option>Breakfast</option>
@@ -183,16 +131,13 @@
         <option>Dinner</option>
       </select>
 
-      <label>Will you eat today?</label>
       <select id="status" required>
-        <option value="">Choose Option</option>
+        <option value="">Will you eat today?</option>
         <option value="yes">Yes, I will eat</option>
         <option value="no">No, I will not eat</option>
       </select>
 
-      <button type="submit" class="submit-btn">
-        ✅ Submit Response
-      </button>
+      <button type="submit">✅ Submit Response</button>
 
       <button type="button" class="reset-btn" onclick="resetDay()">
         🔄 Reset for Next Day
@@ -219,17 +164,17 @@
 
     </div>
 
-    <div class="coordinator">
+  </div>
 
-      <h3>👥 Food Waste Coordinators</h3>
+  <div class="card">
 
-      <div id="coordinatorList"></div>
+    <h3>👥 Food Waste Coordinators</h3>
 
-      <button type="button" class="add-btn" onclick="addCoordinator()">
-        ➕ Add Coordinator
-      </button>
+    <div id="coordinatorList"></div>
 
-    </div>
+    <button type="button" class="add-btn" onclick="addCoordinator()">
+      ➕ Add Coordinator
+    </button>
 
   </div>
 
@@ -256,7 +201,6 @@
 
 <script>
 
-// ===== ADMIN PASSWORD =====
 const ADMIN_PASSWORD = "Hridanshu2026";
 
 let eating = 0;
@@ -264,18 +208,14 @@ let skipping = 0;
 
 let coordinators = ["Hridanshu"];
 
-// ===== UPDATE STATS =====
 function updateStats(){
 
   document.getElementById("eatCount").innerText = eating;
   document.getElementById("skipCount").innerText = skipping;
-
-  const saved = (skipping * 0.7).toFixed(1);
-
-  document.getElementById("wasteSaved").innerText = saved + " kg";
+  document.getElementById("wasteSaved").innerText =
+    (skipping * 0.7).toFixed(1) + " kg";
 }
 
-// ===== FORM SUBMIT =====
 document.getElementById("foodForm").addEventListener("submit", function(e){
 
   e.preventDefault();
@@ -285,17 +225,11 @@ document.getElementById("foodForm").addEventListener("submit", function(e){
   const meal = document.getElementById("meal").value;
   const status = document.getElementById("status").value;
 
-  if(status === "yes"){
-    eating++;
-  }
-
-  if(status === "no"){
-    skipping++;
-  }
+  if(status === "yes") eating++;
+  if(status === "no") skipping++;
 
   updateStats();
 
-  // Add response to table
   document.getElementById("responseTable").innerHTML += `
     <tr>
       <td>${name}</td>
@@ -308,33 +242,27 @@ document.getElementById("foodForm").addEventListener("submit", function(e){
   alert("Response submitted successfully!");
 
   this.reset();
-
 });
 
-// ===== RESET DAY =====
 function resetDay(){
 
   const pass = prompt("Enter admin password:");
 
   if(pass !== ADMIN_PASSWORD){
-    alert("❌ Only admin can reset the data.");
+    alert("❌ Only admin can reset data.");
     return;
   }
 
-  if(confirm("Reset all data for the next day?")){
+  eating = 0;
+  skipping = 0;
 
-    eating = 0;
-    skipping = 0;
+  updateStats();
 
-    updateStats();
+  document.getElementById("responseTable").innerHTML = "";
 
-    document.getElementById("responseTable").innerHTML = "";
-
-    alert("✅ New day started successfully!");
-  }
+  alert("✅ New day started successfully!");
 }
 
-// ===== RENDER COORDINATORS =====
 function renderCoordinators(){
 
   const list = document.getElementById("coordinatorList");
@@ -355,7 +283,6 @@ function renderCoordinators(){
   });
 }
 
-// ===== ADD COORDINATOR =====
 function addCoordinator(){
 
   const pass = prompt("Enter admin password:");
@@ -367,15 +294,12 @@ function addCoordinator(){
 
   const name = prompt("Enter coordinator name:");
 
-  if(name && !coordinators.includes(name)){
-
+  if(name){
     coordinators.push(name);
-
     renderCoordinators();
   }
 }
 
-// ===== REMOVE COORDINATOR =====
 function removeCoordinator(name){
 
   const pass = prompt("Enter admin password:");
@@ -390,7 +314,6 @@ function removeCoordinator(name){
   renderCoordinators();
 }
 
-// ===== INITIAL LOAD =====
 renderCoordinators();
 updateStats();
 
@@ -398,47 +321,69 @@ updateStats();
 
 </body>
 </html>
-    .header p{
-      color:#cbd5e1;
+
+How to update it on GitHub
+
+1. Open index.html
+2. Tap ⋯ → Edit file
+3. Tap inside the code
+4. Select all
+5. Delete everything
+6. Paste the code above
+7. Tap Commit changes
+8. Refresh your website after 20–30 seconds
+
+After that, you’ll see a new section at the bottom called 📋 Student Responses where all students’ names and room numbers will appear automatically when they submit the form.
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Food Saver</title>
+
+  <style>
+    body{
+      font-family:Arial,sans-serif;
+      background:#0f172a;
+      color:white;
+      margin:0;
+      padding:20px;
+    }
+
+    .container{
+      max-width:900px;
+      margin:auto;
     }
 
     .card{
       background:#1e293b;
-      border-radius:20px;
-      padding:25px;
-      box-shadow:0 10px 25px rgba(0,0,0,0.3);
+      padding:24px;
+      border-radius:18px;
+      margin-bottom:20px;
     }
 
-    label{
-      display:block;
-      margin-bottom:8px;
-      font-weight:bold;
+    h1,h2,h3{
+      margin-top:0;
+    }
+
+    input,select,button{
+      width:100%;
+      padding:12px;
+      margin-top:10px;
+      border:none;
+      border-radius:10px;
+      font-size:16px;
     }
 
     input,select{
-      width:100%;
-      padding:12px;
-      border:none;
-      border-radius:10px;
-      margin-bottom:18px;
       background:#334155;
       color:white;
     }
 
     button{
-      width:100%;
-      padding:14px;
-      border:none;
-      border-radius:12px;
-      font-size:16px;
+      background:#2563eb;
+      color:white;
       font-weight:bold;
       cursor:pointer;
-      color:white;
-      margin-bottom:10px;
-    }
-
-    .submit-btn{
-      background:#2563eb;
     }
 
     .reset-btn{
@@ -453,25 +398,30 @@ updateStats();
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
       gap:15px;
-      margin-top:25px;
+      margin-top:20px;
     }
 
     .stat{
       background:#334155;
       padding:20px;
-      border-radius:15px;
+      border-radius:14px;
       text-align:center;
     }
 
-    .stat h2{
-      font-size:2rem;
-      margin-bottom:5px;
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:15px;
     }
 
-    .coordinator{
-      margin-top:25px;
-      border-top:1px solid #475569;
-      padding-top:20px;
+    th,td{
+      border:1px solid #475569;
+      padding:10px;
+      text-align:left;
+    }
+
+    th{
+      background:#334155;
     }
 
     .coord-item{
@@ -479,16 +429,15 @@ updateStats();
       justify-content:space-between;
       align-items:center;
       background:#334155;
-      padding:10px 14px;
+      padding:10px;
       border-radius:10px;
       margin-top:10px;
     }
 
     .remove-btn{
-      background:#dc2626;
       width:auto;
+      background:#dc2626;
       padding:8px 14px;
-      margin:0;
     }
   </style>
 </head>
@@ -497,22 +446,16 @@ updateStats();
 
 <div class="container">
 
-  <div class="header">
-    <h1>🍽️ Hostel Food Saver</h1>
-    <p>Reduce hostel food waste by confirming your meal attendance</p>
-  </div>
-
   <div class="card">
+    <h1>🍽️ Hostel Food Saver</h1>
+    <p>Reduce hostel food waste by confirming your meal attendance.</p>
 
     <form id="foodForm">
 
-      <label>Student Name</label>
-      <input type="text" id="name" required>
+      <input type="text" id="name" placeholder="Student Name" required>
 
-      <label>Room Number</label>
-      <input type="text" id="room" required>
+      <input type="text" id="room" placeholder="Room Number" required>
 
-      <label>Meal Time</label>
       <select id="meal" required>
         <option value="">Select Meal</option>
         <option>Breakfast</option>
@@ -520,16 +463,13 @@ updateStats();
         <option>Dinner</option>
       </select>
 
-      <label>Will you eat today?</label>
       <select id="status" required>
-        <option value="">Choose Option</option>
+        <option value="">Will you eat today?</option>
         <option value="yes">Yes, I will eat</option>
         <option value="no">No, I will not eat</option>
       </select>
 
-      <button type="submit" class="submit-btn">
-        ✅ Submit Response
-      </button>
+      <button type="submit">✅ Submit Response</button>
 
       <button type="button" class="reset-btn" onclick="resetDay()">
         🔄 Reset for Next Day
@@ -556,17 +496,36 @@ updateStats();
 
     </div>
 
-    <div class="coordinator">
+  </div>
 
-      <h3>👥 Food Waste Coordinators</h3>
+  <div class="card">
 
-      <div id="coordinatorList"></div>
+    <h3>👥 Food Waste Coordinators</h3>
 
-      <button type="button" class="add-btn" onclick="addCoordinator()">
-        ➕ Add Coordinator
-      </button>
+    <div id="coordinatorList"></div>
 
-    </div>
+    <button type="button" class="add-btn" onclick="addCoordinator()">
+      ➕ Add Coordinator
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <h2>📋 Student Responses</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Room</th>
+          <th>Meal</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="responseTable"></tbody>
+    </table>
 
   </div>
 
@@ -574,70 +533,68 @@ updateStats();
 
 <script>
 
-// ===== ADMIN PASSWORD =====
-const ADMIN_PASSWORD = "Hridanshu2026"; // change this
+const ADMIN_PASSWORD = "Hridanshu2026";
 
 let eating = 0;
 let skipping = 0;
 
 let coordinators = ["Hridanshu"];
 
-// ===== UPDATE STATS =====
 function updateStats(){
 
   document.getElementById("eatCount").innerText = eating;
   document.getElementById("skipCount").innerText = skipping;
-
-  const saved = (skipping * 0.7).toFixed(1);
-
-  document.getElementById("wasteSaved").innerText = saved + " kg";
+  document.getElementById("wasteSaved").innerText =
+    (skipping * 0.7).toFixed(1) + " kg";
 }
 
-// ===== FORM SUBMIT =====
 document.getElementById("foodForm").addEventListener("submit", function(e){
 
   e.preventDefault();
 
+  const name = document.getElementById("name").value;
+  const room = document.getElementById("room").value;
+  const meal = document.getElementById("meal").value;
   const status = document.getElementById("status").value;
 
-  if(status === "yes"){
-    eating++;
-  }
-
-  if(status === "no"){
-    skipping++;
-  }
+  if(status === "yes") eating++;
+  if(status === "no") skipping++;
 
   updateStats();
+
+  document.getElementById("responseTable").innerHTML += `
+    <tr>
+      <td>${name}</td>
+      <td>${room}</td>
+      <td>${meal}</td>
+      <td>${status}</td>
+    </tr>
+  `;
 
   alert("Response submitted successfully!");
 
   this.reset();
-
 });
 
-// ===== RESET DAY =====
 function resetDay(){
 
   const pass = prompt("Enter admin password:");
 
   if(pass !== ADMIN_PASSWORD){
-    alert("❌ Only admin can reset the data.");
+    alert("❌ Only admin can reset data.");
     return;
   }
 
-  if(confirm("Reset all data for the next day?")){
+  eating = 0;
+  skipping = 0;
 
-    eating = 0;
-    skipping = 0;
+  updateStats();
 
-    updateStats();
+  document.getElementById("responseTable").innerHTML = "";
 
-    alert("✅ New day started successfully!");
-  }
+  alert("✅ New day started successfully!");
 }
 
-// ===== RENDER COORDINATORS =====
 function renderCoordinators(){
 
   const list = document.getElementById("coordinatorList");
@@ -658,7 +615,6 @@ function renderCoordinators(){
   });
 }
 
-// ===== ADD COORDINATOR =====
 function addCoordinator(){
 
   const pass = prompt("Enter admin password:");
@@ -670,15 +626,12 @@ function addCoordinator(){
 
   const name = prompt("Enter coordinator name:");
 
-  if(name && !coordinators.includes(name)){
-
+  if(name){
     coordinators.push(name);
-
     renderCoordinators();
   }
 }
 
-// ===== REMOVE COORDINATOR =====
 function removeCoordinator(name){
 
   const pass = prompt("Enter admin password:");
@@ -693,7 +646,6 @@ function removeCoordinator(name){
   renderCoordinators();
 }
 
-// ===== INITIAL LOAD =====
 renderCoordinators();
 updateStats();
 
@@ -701,3 +653,6 @@ updateStats();
 
 </body>
 </html>
+
+
+
