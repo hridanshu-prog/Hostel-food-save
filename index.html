@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hostel Food Saver</title>
 
   <style>
@@ -13,15 +13,15 @@
     }
 
     body{
-      font-family: Arial, sans-serif;
+      font-family:Arial,sans-serif;
       background:#0f172a;
       color:white;
-      min-height:100vh;
       padding:20px;
+      min-height:100vh;
     }
 
     .container{
-      max-width:800px;
+      max-width:750px;
       margin:auto;
     }
 
@@ -42,9 +42,8 @@
     .card{
       background:#1e293b;
       border-radius:20px;
-      padding:24px;
-      margin-bottom:20px;
-      box-shadow:0 8px 20px rgba(0,0,0,0.3);
+      padding:25px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.3);
     }
 
     label{
@@ -68,28 +67,36 @@
       padding:14px;
       border:none;
       border-radius:12px;
-      background:#2563eb;
-      color:white;
       font-size:16px;
       font-weight:bold;
       cursor:pointer;
+      color:white;
+      margin-bottom:10px;
     }
 
-    button:hover{
-      background:#1d4ed8;
+    .submit-btn{
+      background:#2563eb;
+    }
+
+    .reset-btn{
+      background:#dc2626;
+    }
+
+    .add-btn{
+      background:#059669;
     }
 
     .stats{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
       gap:15px;
-      margin-top:20px;
+      margin-top:25px;
     }
 
     .stat{
       background:#334155;
-      border-radius:15px;
       padding:20px;
+      border-radius:15px;
       text-align:center;
     }
 
@@ -99,16 +106,26 @@
     }
 
     .coordinator{
-      margin-top:20px;
-      padding-top:15px;
+      margin-top:25px;
       border-top:1px solid #475569;
-      color:#cbd5e1;
+      padding-top:20px;
     }
 
-    @media(max-width:600px){
-      .header h1{
-        font-size:1.8rem;
-      }
+    .coord-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:#334155;
+      padding:10px 14px;
+      border-radius:10px;
+      margin-top:10px;
+    }
+
+    .remove-btn{
+      background:#dc2626;
+      width:auto;
+      padding:8px 14px;
+      margin:0;
     }
   </style>
 </head>
@@ -119,7 +136,7 @@
 
   <div class="header">
     <h1>🍽️ Hostel Food Saver</h1>
-    <p>Reduce food waste by confirming your daily meal attendance</p>
+    <p>Reduce hostel food waste by confirming your meal attendance</p>
   </div>
 
   <div class="card">
@@ -147,7 +164,13 @@
         <option value="no">No, I will not eat</option>
       </select>
 
-      <button type="submit">Submit Response</button>
+      <button type="submit" class="submit-btn">
+        ✅ Submit Response
+      </button>
+
+      <button type="button" class="reset-btn" onclick="resetDay()">
+        🔄 Reset for Next Day
+      </button>
 
     </form>
 
@@ -171,8 +194,15 @@
     </div>
 
     <div class="coordinator">
-      <strong>Food Waste Coordinator:</strong><br>
-      Hridanshu | Hostel Mess Committee
+
+      <h3>👥 Food Waste Coordinators</h3>
+
+      <div id="coordinatorList"></div>
+
+      <button type="button" class="add-btn" onclick="addCoordinator()">
+        ➕ Add Coordinator
+      </button>
+
     </div>
 
   </div>
@@ -181,9 +211,26 @@
 
 <script>
 
+// ===== ADMIN PASSWORD =====
+const ADMIN_PASSWORD = "Hridanshu2026"; // change this
+
 let eating = 0;
 let skipping = 0;
 
+let coordinators = ["Hridanshu"];
+
+// ===== UPDATE STATS =====
+function updateStats(){
+
+  document.getElementById("eatCount").innerText = eating;
+  document.getElementById("skipCount").innerText = skipping;
+
+  const saved = (skipping * 0.7).toFixed(1);
+
+  document.getElementById("wasteSaved").innerText = saved + " kg";
+}
+
+// ===== FORM SUBMIT =====
 document.getElementById("foodForm").addEventListener("submit", function(e){
 
   e.preventDefault();
@@ -192,21 +239,100 @@ document.getElementById("foodForm").addEventListener("submit", function(e){
 
   if(status === "yes"){
     eating++;
-  } else if(status === "no"){
+  }
+
+  if(status === "no"){
     skipping++;
   }
 
-  document.getElementById("eatCount").innerText = eating;
-  document.getElementById("skipCount").innerText = skipping;
-
-  const saved = (skipping * 0.7).toFixed(1);
-  document.getElementById("wasteSaved").innerText = saved + " kg";
+  updateStats();
 
   alert("Response submitted successfully!");
 
-  document.getElementById("foodForm").reset();
+  this.reset();
 
 });
+
+// ===== RESET DAY =====
+function resetDay(){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can reset the data.");
+    return;
+  }
+
+  if(confirm("Reset all data for the next day?")){
+
+    eating = 0;
+    skipping = 0;
+
+    updateStats();
+
+    alert("✅ New day started successfully!");
+  }
+}
+
+// ===== RENDER COORDINATORS =====
+function renderCoordinators(){
+
+  const list = document.getElementById("coordinatorList");
+
+  list.innerHTML = "";
+
+  coordinators.forEach(name => {
+
+    list.innerHTML += `
+      <div class="coord-item">
+        <span>${name}</span>
+        <button class="remove-btn"
+                onclick="removeCoordinator('${name}')">
+          Remove
+        </button>
+      </div>
+    `;
+  });
+}
+
+// ===== ADD COORDINATOR =====
+function addCoordinator(){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can add coordinators.");
+    return;
+  }
+
+  const name = prompt("Enter coordinator name:");
+
+  if(name && !coordinators.includes(name)){
+
+    coordinators.push(name);
+
+    renderCoordinators();
+  }
+}
+
+// ===== REMOVE COORDINATOR =====
+function removeCoordinator(name){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can remove coordinators.");
+    return;
+  }
+
+  coordinators = coordinators.filter(c => c !== name);
+
+  renderCoordinators();
+}
+
+// ===== INITIAL LOAD =====
+renderCoordinators();
+updateStats();
 
 </script>
 
