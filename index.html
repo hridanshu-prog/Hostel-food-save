@@ -1,5 +1,3 @@
-Replace your entire "index.html" with this
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,49 +6,77 @@ Replace your entire "index.html" with this
   <title>Hostel Food Saver</title>
 
   <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
     body{
       font-family:Arial,sans-serif;
-      background:#0f172a;
+      background:#0b1220;
       color:white;
-      margin:0;
       padding:20px;
     }
 
     .container{
-      max-width:900px;
+      max-width:950px;
       margin:auto;
     }
 
+    .header{
+      text-align:center;
+      margin-bottom:25px;
+    }
+
+    .header h1{
+      font-size:2.4rem;
+      margin-bottom:8px;
+    }
+
+    .header p{
+      color:#94a3b8;
+    }
+
     .card{
-      background:#1e293b;
-      padding:24px;
+      background:#162033;
       border-radius:18px;
+      padding:24px;
       margin-bottom:20px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.3);
     }
 
-    h1,h2,h3{
-      margin-top:0;
-    }
-
-    input,select,button{
-      width:100%;
-      padding:12px;
-      margin-top:10px;
-      border:none;
-      border-radius:10px;
-      font-size:16px;
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:bold;
     }
 
     input,select{
-      background:#334155;
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      margin-bottom:16px;
+      background:#24324a;
       color:white;
+      font-size:15px;
     }
 
     button{
-      background:#2563eb;
-      color:white;
+      width:100%;
+      padding:13px;
+      border:none;
+      border-radius:10px;
+      font-size:16px;
       font-weight:bold;
       cursor:pointer;
+      color:white;
+      margin-bottom:10px;
+    }
+
+    .submit-btn{
+      background:#2563eb;
     }
 
     .reset-btn{
@@ -63,16 +89,38 @@ Replace your entire "index.html" with this
 
     .stats{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
       gap:15px;
       margin-top:20px;
     }
 
     .stat{
-      background:#334155;
+      background:#24324a;
       padding:20px;
       border-radius:14px;
       text-align:center;
+    }
+
+    .stat h2{
+      font-size:2rem;
+      margin-bottom:6px;
+    }
+
+    .coord-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:#24324a;
+      padding:12px;
+      border-radius:10px;
+      margin-top:10px;
+    }
+
+    .remove-btn{
+      width:auto;
+      background:#dc2626;
+      padding:8px 14px;
+      margin:0;
     }
 
     table{
@@ -82,29 +130,27 @@ Replace your entire "index.html" with this
     }
 
     th,td{
-      border:1px solid #475569;
-      padding:10px;
+      padding:12px;
+      border:1px solid #334155;
       text-align:left;
     }
 
     th{
-      background:#334155;
+      background:#24324a;
     }
 
-    .coord-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:#334155;
-      padding:10px;
-      border-radius:10px;
-      margin-top:10px;
+    tr:nth-child(even){
+      background:#1d2a40;
     }
 
-    .remove-btn{
-      width:auto;
-      background:#dc2626;
-      padding:8px 14px;
+    @media(max-width:700px){
+      .header h1{
+        font-size:2rem;
+      }
+
+      table{
+        font-size:13px;
+      }
     }
   </style>
 </head>
@@ -113,16 +159,24 @@ Replace your entire "index.html" with this
 
 <div class="container">
 
-  <div class="card">
+  <div class="header">
     <h1>🍽️ Hostel Food Saver</h1>
-    <p>Reduce hostel food waste by confirming your meal attendance.</p>
+    <p>Reduce hostel food waste by confirming your daily meal attendance</p>
+  </div>
+
+  <div class="card">
+
+    <h2>📌 Meal Attendance Form</h2>
 
     <form id="foodForm">
 
-      <input type="text" id="name" placeholder="Student Name" required>
+      <label>Student Name</label>
+      <input type="text" id="name" placeholder="Enter your name" required>
 
-      <input type="text" id="room" placeholder="Room Number" required>
+      <label>Room Number</label>
+      <input type="text" id="room" placeholder="Example: A-12" required>
 
+      <label>Meal Time</label>
       <select id="meal" required>
         <option value="">Select Meal</option>
         <option>Breakfast</option>
@@ -130,13 +184,16 @@ Replace your entire "index.html" with this
         <option>Dinner</option>
       </select>
 
+      <label>Will you eat today?</label>
       <select id="status" required>
-        <option value="">Will you eat today?</option>
+        <option value="">Choose Option</option>
         <option value="yes">Yes, I will eat</option>
         <option value="no">No, I will not eat</option>
       </select>
 
-      <button type="submit">✅ Submit Response</button>
+      <button type="submit" class="submit-btn">
+        ✅ Submit Response
+      </button>
 
       <button type="button" class="reset-btn" onclick="resetDay()">
         🔄 Reset for Next Day
@@ -167,7 +224,7 @@ Replace your entire "index.html" with this
 
   <div class="card">
 
-    <h3>👥 Food Waste Coordinators</h3>
+    <h2>👥 Food Waste Coordinators</h2>
 
     <div id="coordinatorList"></div>
 
@@ -200,7 +257,7 @@ Replace your entire "index.html" with this
 
 <script>
 
-const ADMIN_PASSWORD = "Hridanshu2026";
+const ADMIN_PASSWORD = "HostelAdmin2026";
 
 let eating = 0;
 let skipping = 0;
@@ -211,8 +268,10 @@ function updateStats(){
 
   document.getElementById("eatCount").innerText = eating;
   document.getElementById("skipCount").innerText = skipping;
-  document.getElementById("wasteSaved").innerText =
-    (skipping * 0.7).toFixed(1) + " kg";
+
+  const saved = (skipping * 0.7).toFixed(1);
+
+  document.getElementById("wasteSaved").innerText = saved + " kg";
 }
 
 document.getElementById("foodForm").addEventListener("submit", function(e){
@@ -241,6 +300,7 @@ document.getElementById("foodForm").addEventListener("submit", function(e){
   alert("Response submitted successfully!");
 
   this.reset();
+
 });
 
 function resetDay(){
@@ -248,18 +308,21 @@ function resetDay(){
   const pass = prompt("Enter admin password:");
 
   if(pass !== ADMIN_PASSWORD){
-    alert("❌ Only admin can reset data.");
+    alert("❌ Access denied. Only admin can reset data.");
     return;
   }
 
-  eating = 0;
-  skipping = 0;
+  if(confirm("Reset all responses for the next day?")){
 
-  updateStats();
+    eating = 0;
+    skipping = 0;
 
-  document.getElementById("responseTable").innerHTML = "";
+    updateStats();
 
-  alert("✅ New day started successfully!");
+    document.getElementById("responseTable").innerHTML = "";
+
+    alert("✅ New day started successfully!");
+  }
 }
 
 function renderCoordinators(){
@@ -293,15 +356,17 @@ function addCoordinator(){
 
   const name = prompt("Enter coordinator name:");
 
-  if(name){
+  if(name && !coordinators.includes(name)){
+
     coordinators.push(name);
+
     renderCoordinators();
   }
 }
 
 function removeCoordinator(name){
 
-  const pass = prompt("Enter admin password:");
+  const pass = prompt("Hridanshu2026:");
 
   if(pass !== ADMIN_PASSWORD){
     alert("❌ Only admin can remove coordinators.");
@@ -320,16 +385,3 @@ updateStats();
 
 </body>
 </html>
-
-How to update it on GitHub
-
-1. Open index.html
-2. Tap ⋯ → Edit file
-3. Tap inside the code
-4. Select all
-5. Delete everything
-6. Paste the code above
-7. Tap Commit changes
-8. Refresh your website after 20–30 seconds
-
-After that, you’ll see a new section at the bottom called 📋 Student Responses where all students’ names and room numbers will appear automatically when they submit the form.
