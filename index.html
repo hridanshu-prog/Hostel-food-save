@@ -17,11 +17,10 @@
       background:#0f172a;
       color:white;
       padding:20px;
-      min-height:100vh;
     }
 
     .container{
-      max-width:750px;
+      max-width:900px;
       margin:auto;
     }
 
@@ -31,10 +30,374 @@
     }
 
     .header h1{
-      font-size:2.2rem;
+      font-size:2.3rem;
       margin-bottom:10px;
     }
 
+    .header p{
+      color:#cbd5e1;
+    }
+
+    .card{
+      background:#1e293b;
+      border-radius:20px;
+      padding:25px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.3);
+      margin-bottom:20px;
+    }
+
+    label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:bold;
+    }
+
+    input,select{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:10px;
+      margin-bottom:18px;
+      background:#334155;
+      color:white;
+    }
+
+    button{
+      width:100%;
+      padding:14px;
+      border:none;
+      border-radius:12px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+      color:white;
+      margin-bottom:10px;
+    }
+
+    .submit-btn{
+      background:#2563eb;
+    }
+
+    .reset-btn{
+      background:#dc2626;
+    }
+
+    .add-btn{
+      background:#059669;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      gap:15px;
+      margin-top:25px;
+    }
+
+    .stat{
+      background:#334155;
+      padding:20px;
+      border-radius:15px;
+      text-align:center;
+    }
+
+    .stat h2{
+      font-size:2rem;
+      margin-bottom:5px;
+    }
+
+    .coordinator{
+      margin-top:25px;
+      border-top:1px solid #475569;
+      padding-top:20px;
+    }
+
+    .coord-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:#334155;
+      padding:10px 14px;
+      border-radius:10px;
+      margin-top:10px;
+    }
+
+    .remove-btn{
+      background:#dc2626;
+      width:auto;
+      padding:8px 14px;
+      margin:0;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:15px;
+    }
+
+    th,td{
+      padding:12px;
+      border:1px solid #475569;
+      text-align:left;
+    }
+
+    th{
+      background:#334155;
+    }
+
+    tr:nth-child(even){
+      background:#263445;
+    }
+
+    @media(max-width:700px){
+      table{
+        font-size:14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h1>🍽️ Hostel Food Saver</h1>
+    <p>Reduce hostel food waste by confirming your meal attendance</p>
+  </div>
+
+  <div class="card">
+
+    <form id="foodForm">
+
+      <label>Student Name</label>
+      <input type="text" id="name" required>
+
+      <label>Room Number</label>
+      <input type="text" id="room" required>
+
+      <label>Meal Time</label>
+      <select id="meal" required>
+        <option value="">Select Meal</option>
+        <option>Breakfast</option>
+        <option>Lunch</option>
+        <option>Dinner</option>
+      </select>
+
+      <label>Will you eat today?</label>
+      <select id="status" required>
+        <option value="">Choose Option</option>
+        <option value="yes">Yes, I will eat</option>
+        <option value="no">No, I will not eat</option>
+      </select>
+
+      <button type="submit" class="submit-btn">
+        ✅ Submit Response
+      </button>
+
+      <button type="button" class="reset-btn" onclick="resetDay()">
+        🔄 Reset for Next Day
+      </button>
+
+    </form>
+
+    <div class="stats">
+
+      <div class="stat">
+        <h2 id="eatCount">0</h2>
+        <p>Eating</p>
+      </div>
+
+      <div class="stat">
+        <h2 id="skipCount">0</h2>
+        <p>Skipping</p>
+      </div>
+
+      <div class="stat">
+        <h2 id="wasteSaved">0 kg</h2>
+        <p>Waste Saved</p>
+      </div>
+
+    </div>
+
+    <div class="coordinator">
+
+      <h3>👥 Food Waste Coordinators</h3>
+
+      <div id="coordinatorList"></div>
+
+      <button type="button" class="add-btn" onclick="addCoordinator()">
+        ➕ Add Coordinator
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="card">
+
+    <h2>📋 Student Responses</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Room</th>
+          <th>Meal</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="responseTable"></tbody>
+    </table>
+
+  </div>
+
+</div>
+
+<script>
+
+// ===== ADMIN PASSWORD =====
+const ADMIN_PASSWORD = "Hridanshu2026";
+
+let eating = 0;
+let skipping = 0;
+
+let coordinators = ["Hridanshu"];
+
+// ===== UPDATE STATS =====
+function updateStats(){
+
+  document.getElementById("eatCount").innerText = eating;
+  document.getElementById("skipCount").innerText = skipping;
+
+  const saved = (skipping * 0.7).toFixed(1);
+
+  document.getElementById("wasteSaved").innerText = saved + " kg";
+}
+
+// ===== FORM SUBMIT =====
+document.getElementById("foodForm").addEventListener("submit", function(e){
+
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const room = document.getElementById("room").value;
+  const meal = document.getElementById("meal").value;
+  const status = document.getElementById("status").value;
+
+  if(status === "yes"){
+    eating++;
+  }
+
+  if(status === "no"){
+    skipping++;
+  }
+
+  updateStats();
+
+  // Add response to table
+  document.getElementById("responseTable").innerHTML += `
+    <tr>
+      <td>${name}</td>
+      <td>${room}</td>
+      <td>${meal}</td>
+      <td>${status}</td>
+    </tr>
+  `;
+
+  alert("Response submitted successfully!");
+
+  this.reset();
+
+});
+
+// ===== RESET DAY =====
+function resetDay(){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can reset the data.");
+    return;
+  }
+
+  if(confirm("Reset all data for the next day?")){
+
+    eating = 0;
+    skipping = 0;
+
+    updateStats();
+
+    document.getElementById("responseTable").innerHTML = "";
+
+    alert("✅ New day started successfully!");
+  }
+}
+
+// ===== RENDER COORDINATORS =====
+function renderCoordinators(){
+
+  const list = document.getElementById("coordinatorList");
+
+  list.innerHTML = "";
+
+  coordinators.forEach(name => {
+
+    list.innerHTML += `
+      <div class="coord-item">
+        <span>${name}</span>
+        <button class="remove-btn"
+                onclick="removeCoordinator('${name}')">
+          Remove
+        </button>
+      </div>
+    `;
+  });
+}
+
+// ===== ADD COORDINATOR =====
+function addCoordinator(){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can add coordinators.");
+    return;
+  }
+
+  const name = prompt("Enter coordinator name:");
+
+  if(name && !coordinators.includes(name)){
+
+    coordinators.push(name);
+
+    renderCoordinators();
+  }
+}
+
+// ===== REMOVE COORDINATOR =====
+function removeCoordinator(name){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can remove coordinators.");
+    return;
+  }
+
+  coordinators = coordinators.filter(c => c !== name);
+
+  renderCoordinators();
+}
+
+// ===== INITIAL LOAD =====
+renderCoordinators();
+updateStats();
+
+</script>
+
+</body>
+</html>
     .header p{
       color:#cbd5e1;
     }
