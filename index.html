@@ -1,279 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hostel Food Saver</title>
-
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
-
-    body{
-      font-family:Arial,sans-serif;
-      background:#0b1220;
-      color:white;
-      padding:20px;
-    }
-
-    .container{
-      max-width:950px;
-      margin:auto;
-    }
-
-    .header{
-      text-align:center;
-      margin-bottom:25px;
-    }
-
-    .header h1{
-      font-size:2.4rem;
-      margin-bottom:8px;
-    }
-
-    .header p{
-      color:#94a3b8;
-    }
-
-    .card{
-      background:#162033;
-      border-radius:18px;
-      padding:24px;
-      margin-bottom:20px;
-      box-shadow:0 10px 25px rgba(0,0,0,0.3);
-    }
-
-    label{
-      display:block;
-      margin-bottom:8px;
-      font-weight:bold;
-    }
-
-    input,select{
-      width:100%;
-      padding:12px;
-      border:none;
-      border-radius:10px;
-      margin-bottom:16px;
-      background:#24324a;
-      color:white;
-      font-size:15px;
-    }
-
-    button{
-      width:100%;
-      padding:13px;
-      border:none;
-      border-radius:10px;
-      font-size:16px;
-      font-weight:bold;
-      cursor:pointer;
-      color:white;
-      margin-bottom:10px;
-    }
-
-    .submit-btn{
-      background:#2563eb;
-    }
-
-    .reset-btn{
-      background:#dc2626;
-    }
-
-    .add-btn{
-      background:#059669;
-    }
-
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-      gap:15px;
-      margin-top:20px;
-    }
-
-    .stat{
-      background:#24324a;
-      padding:20px;
-      border-radius:14px;
-      text-align:center;
-    }
-
-    .stat h2{
-      font-size:2rem;
-      margin-bottom:6px;
-    }
-
-    .coord-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      background:#24324a;
-      padding:12px;
-      border-radius:10px;
-      margin-top:10px;
-    }
-
-    .remove-btn{
-      width:auto;
-      background:#dc2626;
-      padding:8px 14px;
-      margin:0;
-    }
-
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:15px;
-    }
-
-    th,td{
-      padding:12px;
-      border:1px solid #334155;
-      text-align:left;
-    }
-
-    th{
-      background:#24324a;
-    }
-
-    tr:nth-child(even){
-      background:#1d2a40;
-    }
-
-    @media(max-width:700px){
-      .header h1{
-        font-size:2rem;
-      }
-
-      table{
-        font-size:13px;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="container">
-
-  <div class="header">
-    <h1>🍽️ Hostel Food Saver</h1>
-    <p>Reduce hostel food waste by confirming your daily meal attendance</p>
-  </div>
-
-  <div class="card">
-
-    <h2>📌 Meal Attendance Form</h2>
-
-    <form id="foodForm">
-
-      <label>Student Name</label>
-      <input type="text" id="name" placeholder="Enter your name" required>
-
-      <label>Room Number</label>
-      <input type="text" id="room" placeholder="Example: A-12" required>
-
-      <label>Meal Time</label>
-      <select id="meal" required>
-        <option value="">Select Meal</option>
-        <option>Breakfast</option>
-        <option>Lunch</option>
-        <option>Dinner</option>
-      </select>
-
-      <label>Will you eat today?</label>
-      <select id="status" required>
-        <option value="">Choose Option</option>
-        <option value="yes">Yes, I will eat</option>
-        <option value="no">No, I will not eat</option>
-      </select>
-
-      <button type="submit" class="submit-btn">
-        ✅ Submit Response
-      </button>
-
-      <button type="button" class="reset-btn" onclick="resetDay()">
-        🔄 Reset for Next Day
-      </button>
-
-    </form>
-
-    <div class="stats">
-
-      <div class="stat">
-        <h2 id="eatCount">0</h2>
-        <p>Eating</p>
-      </div>
-
-      <div class="stat">
-        <h2 id="skipCount">0</h2>
-        <p>Skipping</p>
-      </div>
-
-      <div class="stat">
-        <h2 id="wasteSaved">0 kg</h2>
-        <p>Waste Saved</p>
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <h2>👥 Food Waste Coordinators</h2>
-
-    <div id="coordinatorList"></div>
-
-    <button type="button" class="add-btn" onclick="addCoordinator()">
-      ➕ Add Coordinator
-    </button>
-
-  </div>
-
-  <div class="card">
-
-    <h2>📋 Student Responses</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Room</th>
-          <th>Meal</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-
-      <tbody id="responseTable"></tbody>
-    </table>
-
-  </div>
-
-</div>
-
 <script>
 
 const ADMIN_PASSWORD = "HostelAdmin2026";
 
-let eating = 0;
-let skipping = 0;
+// Create a separate storage for each day
+const today = new Date().toISOString().split("T")[0];
+const RESPONSE_KEY = "responses_" + today;
+const STATS_KEY = "stats_" + today;
+const COORD_KEY = "coordinators";
 
-let coordinators = ["Hridanshu"];
+// Load saved data
+let studentResponses = JSON.parse(localStorage.getItem(RESPONSE_KEY)) || [];
 
-function updateStats(){
+let stats = JSON.parse(localStorage.getItem(STATS_KEY)) || {
+  eating: 0,
+  skipping: 0
+};
 
-  document.getElementById("eatCount").innerText = eating;
-  document.getElementById("skipCount").innerText = skipping;
+let coordinators = JSON.parse(localStorage.getItem(COORD_KEY)) || ["Hridanshu"];
 
-  const saved = (skipping * 0.7).toFixed(1);
-
-  document.getElementById("wasteSaved").innerText = saved + " kg";
+// Save functions
+function saveResponses(){
+  localStorage.setItem(RESPONSE_KEY, JSON.stringify(studentResponses));
 }
 
+function saveStats(){
+  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+}
+
+function saveCoordinators(){
+  localStorage.setItem(COORD_KEY, JSON.stringify(coordinators));
+}
+
+// Update statistics
+function updateStats(){
+
+  document.getElementById("eatCount").innerText = stats.eating;
+  document.getElementById("skipCount").innerText = stats.skipping;
+
+  const saved = (stats.skipping * 0.7).toFixed(1);
+
+  document.getElementById("wasteSaved").innerText = saved + " kg";
+
+  saveStats();
+}
+
+// Render student table
+function renderResponses(){
+
+  const table = document.getElementById("responseTable");
+
+  table.innerHTML = "";
+
+  studentResponses.forEach(r => {
+    table.innerHTML += `
+      <tr>
+        <td>${r.name}</td>
+        <td>${r.room}</td>
+        <td>${r.meal}</td>
+        <td>${r.status}</td>
+      </tr>
+    `;
+  });
+}
+
+// Form submit
 document.getElementById("foodForm").addEventListener("submit", function(e){
 
   e.preventDefault();
@@ -283,26 +73,23 @@ document.getElementById("foodForm").addEventListener("submit", function(e){
   const meal = document.getElementById("meal").value;
   const status = document.getElementById("status").value;
 
-  if(status === "yes") eating++;
-  if(status === "no") skipping++;
+  const response = { name, room, meal, status };
+
+  studentResponses.push(response);
+  saveResponses();
+
+  if(status === "yes") stats.eating++;
+  if(status === "no") stats.skipping++;
 
   updateStats();
-
-  document.getElementById("responseTable").innerHTML += `
-    <tr>
-      <td>${name}</td>
-      <td>${room}</td>
-      <td>${meal}</td>
-      <td>${status}</td>
-    </tr>
-  `;
+  renderResponses();
 
   alert("Response submitted successfully!");
 
   this.reset();
-
 });
 
+// Reset for next day
 function resetDay(){
 
   const pass = prompt("Enter admin password:");
@@ -314,17 +101,20 @@ function resetDay(){
 
   if(confirm("Reset all responses for the next day?")){
 
-    eating = 0;
-    skipping = 0;
+    localStorage.removeItem(RESPONSE_KEY);
+    localStorage.removeItem(STATS_KEY);
+
+    studentResponses = [];
+    stats = { eating: 0, skipping: 0 };
 
     updateStats();
-
-    document.getElementById("responseTable").innerHTML = "";
+    renderResponses();
 
     alert("✅ New day started successfully!");
   }
 }
 
+// Coordinators
 function renderCoordinators(){
 
   const list = document.getElementById("coordinatorList");
@@ -359,14 +149,14 @@ function addCoordinator(){
   if(name && !coordinators.includes(name)){
 
     coordinators.push(name);
-
+    saveCoordinators();
     renderCoordinators();
   }
 }
 
 function removeCoordinator(name){
 
-  const pass = prompt("Hridanshu2026:");
+  const pass = prompt("Enter admin password:");
 
   if(pass !== ADMIN_PASSWORD){
     alert("❌ Only admin can remove coordinators.");
@@ -375,14 +165,13 @@ function removeCoordinator(name){
 
   coordinators = coordinators.filter(c => c !== name);
 
+  saveCoordinators();
   renderCoordinators();
 }
 
+// Load everything when page opens
 renderCoordinators();
+renderResponses();
 updateStats();
 
 </script>
-
-</body>
-
-</html>
