@@ -382,6 +382,341 @@ renderCoordinators();
 updateStats();
 
 </script>
+  <script>
 
+const ADMIN_PASSWORD = "HostelAdmin2026";
+
+// Create a separate storage for each day
+const today = new Date().toISOString().split("T")[0];
+const RESPONSE_KEY = "responses_" + today;
+const STATS_KEY = "stats_" + today;
+const COORD_KEY = "coordinators";
+
+// Load saved data
+let studentResponses = JSON.parse(localStorage.getItem(RESPONSE_KEY)) || [];
+
+let stats = JSON.parse(localStorage.getItem(STATS_KEY)) || {
+  eating: 0,
+  skipping: 0
+};
+
+let coordinators = JSON.parse(localStorage.getItem(COORD_KEY)) || ["Hridanshu"];
+
+// Save functions
+function saveResponses(){
+  localStorage.setItem(RESPONSE_KEY, JSON.stringify(studentResponses));
+}
+
+function saveStats(){
+  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+}
+
+function saveCoordinators(){
+  localStorage.setItem(COORD_KEY, JSON.stringify(coordinators));
+}
+
+// Update statistics
+function updateStats(){
+
+  document.getElementById("eatCount").innerText = stats.eating;
+  document.getElementById("skipCount").innerText = stats.skipping;
+
+  const saved = (stats.skipping * 0.7).toFixed(1);
+
+  document.getElementById("wasteSaved").innerText = saved + " kg";
+
+  saveStats();
+}
+
+// Render student table
+function renderResponses(){
+
+  const table = document.getElementById("responseTable");
+
+  table.innerHTML = "";
+
+  studentResponses.forEach(r => {
+    table.innerHTML += `
+      <tr>
+        <td>${r.name}</td>
+        <td>${r.room}</td>
+        <td>${r.meal}</td>
+        <td>${r.status}</td>
+      </tr>
+    `;
+  });
+}
+
+// Form submit
+document.getElementById("foodForm").addEventListener("submit", function(e){
+
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const room = document.getElementById("room").value;
+  const meal = document.getElementById("meal").value;
+  const status = document.getElementById("status").value;
+
+  const response = { name, room, meal, status };
+
+  studentResponses.push(response);
+  saveResponses();
+
+  if(status === "yes") stats.eating++;
+  if(status === "no") stats.skipping++;
+
+  updateStats();
+  renderResponses();
+
+  alert("Response submitted successfully!");
+
+  this.reset();
+});
+
+// Reset for next day
+function resetDay(){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Access denied. Only admin can reset data.");
+    return;
+  }
+
+  if(confirm("Reset all responses for the next day?")){
+
+    localStorage.removeItem(RESPONSE_KEY);
+    localStorage.removeItem(STATS_KEY);
+
+    studentResponses = [];
+    stats = { eating: 0, skipping: 0 };
+
+    updateStats();
+    renderResponses();
+
+    alert("✅ New day started successfully!");
+  }
+}
+
+// Coordinators
+function renderCoordinators(){
+
+  const list = document.getElementById("coordinatorList");
+
+  list.innerHTML = "";
+
+  coordinators.forEach(name => {
+
+    list.innerHTML += `
+      <div class="coord-item">
+        <span>${name}</span>
+        <button class="remove-btn"
+                onclick="removeCoordinator('${name}')">
+          Remove
+        </button>
+      </div>
+    `;
+  });
+}
+
+function addCoordinator(){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can add coordinators.");
+    return;
+  }
+
+  const name = prompt("Enter coordinator name:");
+
+  if(name && !coordinators.includes(name)){
+
+    coordinators.push(name);
+    saveCoordinators();
+    renderCoordinators();
+  }
+}
+
+function removeCoordinator(name){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can remove coordinators.");
+    return;
+  }
+
+  coordinators = coordinators.filter(c => c !== name);
+
+  saveCoordinators();
+  renderCoordinators();
+}
+
+// Load everything when page opens
+renderCoordinators();
+renderResponses();
+updateStats();
+
+  </script>
+  
+<script>
+
+const ADMIN_PASSWORD = "HostelAdmin2026";
+
+// Create a separate storage for each day
+const today = new Date().toISOString().split("T")[0];
+const RESPONSE_KEY = "responses_" + today;
+const STATS_KEY = "stats_" + today;
+const COORD_KEY = "coordinators";
+
+// Load saved data
+let studentResponses = JSON.parse(localStorage.getItem(RESPONSE_KEY)) || [];
+
+let stats = JSON.parse(localStorage.getItem(STATS_KEY)) || {
+  eating: 0,
+  skipping: 0
+};
+
+let coordinators = JSON.parse(localStorage.getItem(COORD_KEY)) || ["Hridanshu"];
+
+// Save functions
+function saveResponses(){
+  localStorage.setItem(RESPONSE_KEY, JSON.stringify(studentResponses));
+}
+
+function saveStats(){
+  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+}
+
+function saveCoordinators(){
+  localStorage.setItem(COORD_KEY, JSON.stringify(coordinators));
+}
+
+// Update statistics
+function updateStats(){
+
+  document.getElementById("eatCount").innerText = stats.eating;
+  document.getElementById("skipCount").innerText = stats.skipping;
+
+  const saved = (stats.skipping * 0.7).toFixed(1);
+
+  document.getElementById("wasteSaved").innerText = saved + " kg";
+
+  saveStats();
+}
+
+// Render student table
+function renderResponses(){
+
+  const table = document.getElementById("responseTable");
+
+  table.innerHTML = "";
+
+  studentResponses.forEach(r => {
+    table.innerHTML += `
+      <tr>
+        <td>${r.name}</td>
+        <td>${r.room}</td>
+        <td>${r.meal}</td>
+        <td>${r.status}</td>
+      </tr>
+    `;
+  });
+}
+
+// Form submit
+document.getElementById("foodForm").addEventListener("submit", function(e){
+
+  e.preventDefault();
+
+  const name = document.getElementById("name").value;
+  const room = document.getElementById("room").value;
+  const meal = document.getElementById("meal").value;
+  const status = document.getElementById("status").value;
+
+  const response = { name, room, meal, status };
+
+  studentResponses.push(response);
+  saveResponses();
+
+  if(status === "yes") stats.eating++;
+  if(status === "no") stats.skipping++;
+
+  updateStats();
+  renderResponses();
+
+  alert("Response submitted successfully!");
+
+  this.reset();
+});
+
+// Reset for next day
+function resetDay(){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Access denied. Only admin can reset data.");
+    return;
+  }
+
+  if(confirm("Reset all responses for the next day?")){
+
+    localStorage.removeItem(RESPONSE_KEY);
+    localStorage.removeItem(STATS_KEY);
+
+    studentResponses = [];
+    stats = { eating: 0, skipping: 0 };
+
+    updateStats();
+    renderResponses();
+
+    alert("✅ New day started successfully!");
+  }
+}
+
+// Coordinators
+function renderCoordinators(){
+
+  const list = document.getElementById("coordinatorList");
+
+  list.innerHTML = "";
+
+  coordinators.forEach(name => {
+
+    list.innerHTML += `
+      <div class="coord-item">
+        <span>${name}</span>
+        <button class="remove-btn"
+                onclick="removeCoordinator('${name}')">
+          Remove
+        </button>
+      </div>
+    `;
+  });
+}
+
+function addCoordinator(){
+
+  const pass = prompt("Enter admin password:");
+
+  if(pass !== ADMIN_PASSWORD){
+    alert("❌ Only admin can add coordinators.");
+    return;
+  }
+
+  const name = prompt("Enter coordinator name:");
+
+  if(name && !coordinators.includes(name)){
+
+    coordinators.push(name);
+    saveCoordinators();
+    renderCoordinators();
+  }
+}
+
+
+</script>
 </body>
 </html>
